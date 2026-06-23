@@ -277,10 +277,18 @@ void deleteAthlete() {
     }
     std::vector<std::string> remaining;
     std::string line;
-    int row = 1;
+    int row = 0;         // counts only DATA rows (header is preserved unconditionally)
+    bool firstRow = true;
     bool found = false;
     std::string deletedLine;
     while (std::getline(in, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();  // strip Windows CR
+        if (firstRow) {
+            firstRow = false;
+            remaining.push_back(line);  // always keep the header line
+            continue;
+        }
+        ++row;  // row 1 == first data record, matches linked-list index 1
         bool isMatch =
             (choice == 1 && line.substr(0, line.find(',')) == id) ||
             (choice == 2 && row == index);
@@ -290,7 +298,6 @@ void deleteAthlete() {
         } else {
             remaining.push_back(line);
         }
-        ++row;
     }
     in.close();
 
@@ -337,11 +344,13 @@ void showChangedRecords() {
         return;
     }
     std::string line;
-    int row = 1;
+    int row = 0;
+    bool firstRow = true;
     std::cout << "Changed Records:\n";
     while (std::getline(in, line)) {
-        if (changed.count(row)) std::cout << "Index " << row << ": " << line << "\n";
+        if (firstRow) { firstRow = false; continue; }  // skip header
         ++row;
+        if (changed.count(row)) std::cout << "Index " << row << ": " << line << "\n";
     }
 }
 

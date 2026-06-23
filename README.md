@@ -1,18 +1,10 @@
 # Paris 2024 Olympic Athlete Tracking System
 
-A C++17 command-line application for managing athlete records from the Paris 2024 Summer Olympics. Records are stored in a custom singly linked list, persisted to CSV, and gated behind a simple file-backed authentication system. Built as a Data Structures & Algorithms (CSE225) course project.
+A C++17 command-line application for managing athlete records from the Paris 2024 Summer Olympics. Records are stored in a custom singly linked list, persisted to CSV, and gated behind a simple file-backed authentication system. Built as a Data Structures & Algorithms (CSE225) course project at North South University.
 
 > **Status:** Coursework project, refactored into a modular, cross-platform codebase. Builds on Windows, macOS, and Linux. Companion web dashboard auto-deploys to GitHub Pages.
 
-🔗 **Live dashboard:** https://dhruba531.github.io/CSE225OlympicProject/
-
----
-
-## Demo
-
-![Menu screenshot](docs/screenshots/menu.png)
-
-*(Add a screenshot or terminal recording at `docs/screenshots/menu.png` to fill this in.)*
+🔗 **Live dashboard:** https://foysal-mahamud.github.io/CSE225OlympicProject/
 
 ---
 
@@ -40,7 +32,7 @@ A C++17 command-line application for managing athlete records from the Paris 202
   - `std::unordered_map` — user credential lookup and medal-count aggregation for stats.
   - `std::set` — change-index tracking.
   - `std::vector` + `std::sort` with lambda comparators — top-N rankings.
-- **File I/O:** CSV parsing and rewriting via `<fstream>` / `<sstream>`.
+- **File I/O:** RFC 4180-compliant CSV parsing (handles quoted fields with embedded commas) and rewriting via `<fstream>` / `<sstream>`.
 - **Platform abstraction:** isolated in a single `Platform` module.
 
 ---
@@ -66,13 +58,12 @@ CSE225OlympicProject/
 │   ├── Stats.cpp
 │   └── main.cpp
 ├── data/
-│   └── athletes.csv      # Paris 2024 athlete data
+│   └── athletes.csv      # Paris 2024 athlete data (30-column source format)
 ├── docs/                 # Static web dashboard (deployed to GitHub Pages)
 │   ├── index.html
 │   ├── styles.css
 │   ├── app.js
-│   ├── data/athletes.csv # Mirror of the root data file
-│   └── screenshots/      # Place demo images here
+│   └── data/athletes.csv # Mirror of the root data file
 ├── CMakeLists.txt
 ├── Makefile
 ├── LICENSE
@@ -83,7 +74,7 @@ CSE225OlympicProject/
 
 ## Build & Run
 
-The program reads `data/athletes.csv` and writes `users.dat` relative to the **current working directory**, so launch it from the project root.
+The program reads `data/athletes.csv` and writes `users.dat` relative to the **current working directory**, so always launch it from the project root.
 
 ### Option 1 — CMake (recommended)
 
@@ -145,38 +136,36 @@ On first launch:
 
 ## Data Schema
 
-`data/athletes.csv` contains one athlete record per row with the following 18 columns:
+`data/athletes.csv` is sourced from the Paris 2024 official dataset and contains **30 columns**. The C++ application tracks the following 18 fields (blank/spacer columns in the source file are skipped on load):
 
-| # | Column | # | Column |
-|--:|--------|--:|--------|
-| 1 | Athlete ID | 10 | Medal ID |
-| 2 | Name | 11 | Medal Type |
-| 3 | Gender | 12 | Medal Rank |
-| 4 | Type | 13 | Opponent Name |
-| 5 | Country Name | 14 | Game |
-| 6 | Native Language | 15 | Event Start Time |
-| 7 | Event Type | 16 | Event End Time |
-| 8 | Event Name | 17 | Venue |
-| 9 | Date of Birth | 18 | Stadium |
+| Source Column | Field | Description |
+|--------------:|-------|-------------|
+| 0 | Athlete ID | Unique numeric identifier |
+| 1 | Name | Athlete full name |
+| 2 | Gender | Male / Female |
+| 3 | Type | e.g., Athlete, Coach |
+| 5 | Country Name | Full country name |
+| 6 | Native Language | Athlete's native language |
+| 7 | Event Type | Sport category |
+| 8 | Event Name | Specific event |
+| 9 | Date of Birth | DD/MM/YYYY |
+| 12 | Medal ID | Unique medal record ID |
+| 13 | Medal Type | Gold Medal / Silver Medal / Bronze Medal |
+| 14 | Medal Rank | 1 / 2 / 3 |
+| 16 | Opponent Name | Name of opposing athlete (where applicable) |
+| 18 | Game | e.g., Cycling Road |
+| 23 | Start Time | ISO 8601 event start timestamp |
+| 24 | End Time | ISO 8601 event end timestamp |
+| 28 | Venue | Venue name |
+| 29 | Stadium | Full stadium name and city |
 
-The CSV header row is skipped automatically on load.
-
----
-
-## Authors
-
-CSE225 group project — North South University.
-
-- Rafiur Rahman Mashrafi (ID: 2221971042)
-- **Dhruba Saha** (ID: 2232537042) — maintainer
-- Md. Tanvir Rahman (ID: 2211462042)
-- Foysal Mahamud (ID: 2231078042)
+> **Note:** After any save operation the program rewrites `data/athletes.csv` in a compact 18-column format. The web dashboard in `docs/` always reads its own copy (`docs/data/athletes.csv`) and is unaffected.
 
 ---
 
 ## Web Dashboard
 
-A companion static dashboard lives in [`docs/`](docs/). To enable the live URL, go to **Repo Settings → Pages → Build and deployment → Source: Deploy from a branch → `main` / `/docs`** — GitHub will serve the dashboard at the URL shown above.
+A companion static dashboard lives in [`docs/`](docs/). To enable the live URL, go to **Repo Settings → Pages → Build and deployment → Source: Deploy from a branch → `main` / `/docs`** — GitHub will serve the dashboard at the URL shown at the top of this file.
 
 Features:
 - Searchable, paginated athlete table with medal filter.
@@ -193,6 +182,17 @@ python3 -m http.server 8000
 ```
 
 Tech: vanilla HTML + CSS + JS, Chart.js loaded from CDN, zero build step.
+
+---
+
+## Authors
+
+CSE225 group project — North South University.
+
+- Rafiur Rahman Mashrafi (ID: 2221971042)
+- Dhruba Saha (ID: 2232537042)
+- Md. Tanvir Rahman (ID: 2211462042)
+- **Foysal Mahamud** (ID: 2231078042) — repository maintainer
 
 ---
 
