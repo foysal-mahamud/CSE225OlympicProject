@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paris 2024 Olympics Dashboard</title>
+  <meta name="description" content="Interactive dashboard for Paris 2024 Olympic athlete and medal data." />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">CSE225 · DSA Project</p>
+      <h1>Paris 2024 Olympics Dashboard</h1>
+      <p class="lede">A live, searchable view of the same athlete dataset that powers the C++ CLI in this repo.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://github.com/Dhruba531/CSE225OlympicProject">View on GitHub</a>
+        <a class="btn" href="https://github.com/Dhruba531/CSE225OlympicProject#build--run">Run the CLI</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats-row" id="kpis" aria-label="Key totals">
+      <div class="kpi"><div class="kpi-label">Athletes</div><div class="kpi-value" id="kpi-athletes">—</div></div>
+      <div class="kpi"><div class="kpi-label">Countries</div><div class="kpi-value" id="kpi-countries">—</div></div>
+      <div class="kpi"><div class="kpi-label">Sports</div><div class="kpi-value" id="kpi-sports">—</div></div>
+      <div class="kpi"><div class="kpi-label">Medals</div><div class="kpi-value" id="kpi-medals">—</div></div>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="athletes" role="tab">Athletes</button>
+      <button class="tab" data-tab="countries" role="tab">Countries</button>
+      <button class="tab" data-tab="top-athletes" role="tab">Top Athletes</button>
+      <button class="tab" data-tab="sports" role="tab">Sports</button>
+    </nav>
+
+    <section id="tab-athletes" class="tab-panel active">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Search by name, country, sport, event..." aria-label="Search athletes" />
+        <select id="medal-filter" aria-label="Filter by medal">
+          <option value="">All medals</option>
+          <option value="Gold Medal">Gold</option>
+          <option value="Silver Medal">Silver</option>
+          <option value="Bronze Medal">Bronze</option>
+        </select>
+        <span id="result-count" class="result-count">—</span>
+      </div>
+      <div class="table-wrap">
+        <table id="athletes-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Country</th>
+              <th>Sport</th>
+              <th>Event</th>
+              <th>Medal</th>
+              <th>Venue</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button id="prev-page">Previous</button>
+        <span id="page-info">Page 1</span>
+        <button id="next-page">Next</button>
+      </div>
+    </section>
+
+    <section id="tab-countries" class="tab-panel">
+      <div class="grid two-col">
+        <div class="card">
+          <h2>Top countries by total medals</h2>
+          <div class="chart-wrap"><canvas id="chart-countries"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Medal breakdown (top 10)</h2>
+          <div class="chart-wrap"><canvas id="chart-medals-stack"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-top-athletes" class="tab-panel">
+      <div class="card">
+        <h2>Top 20 athletes by medal count</h2>
+        <div class="chart-wrap tall"><canvas id="chart-athletes"></canvas></div>
+      </div>
+    </section>
+
+    <section id="tab-sports" class="tab-panel">
+      <div class="grid two-col">
+        <div class="card">
+          <h2>Most popular sports</h2>
+          <div class="chart-wrap"><canvas id="chart-sports"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Events per sport</h2>
+          <div class="chart-wrap"><canvas id="chart-events"></canvas></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Built as a portfolio companion to the
+      <a href="https://github.com/Dhruba531/CSE225OlympicProject">CSE225 Olympic Project</a>.
+      Data loaded client-side from <code>data/athletes.csv</code>.
+    </p>
+  </footer>
+
+  <div id="loading" class="loading">Loading data…</div>
+</body>
+</html>
